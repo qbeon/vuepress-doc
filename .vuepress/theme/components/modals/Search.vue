@@ -1,0 +1,15 @@
+<template>
+<div id="search">
+	<h1>Search</h1>
+</div>
+</template>
+
+<script>
+export default {
+	name: 'ModalSearch',
+}
+</script>
+
+<style lang="stylus" scoped>
+
+</style>
