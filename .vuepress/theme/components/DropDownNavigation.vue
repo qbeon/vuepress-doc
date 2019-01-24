@@ -1,26 +1,52 @@
 <template>
 <div class="drop-down-nav" ref="dropDownNav">
-	<div class="content">
-		<div id="options">
-			<button
-			v-for="option in dropDownNavOptions"
-			:id="option.id"
-			:class="{'current': isCurrentPanel(option.id)}"
-			@click="currentPanel = option.id">
-				<i class="material-icons">{{ option.icon }}</i>
-			</button>
-			<div :class="['slider', currentPanel]"/>
+	<div class="content" @scroll="headerShadowOnScroll">
+		<div class="header" :contentScrolled="isContentScrolled">
+			<div v-show="!search.state" class="options">
+				<button
+				v-for="option in dropDownNavOptions"
+				:key="option.id"
+				@click="changePanel(option)"
+				:class="[
+					option.id,
+					{'current': isCurrentPanel(option.id)},
+				]">
+					<materialIcon :icon="option.icon"/>
+				</button>
+				<button @click="toggleSearch()">
+					<materialIcon icon="search"/>
+				</button>
+				<div :class="['slider', currentPanel]"/>
+			</div>
+			<div v-show="search.state" class="search-input">
+				<input
+					type="text"
+					v-model="search.input"
+					placeholder="Search me"
+				/>
+				<button class="close" @click="toggleSearch()">
+					<materialIcon icon="close"/>
+				</button>
+			</div>
 		</div>
-		<div id="panel-slider">
+		<div class="panel-slider">
 			<transition name="panel-slider">
-				<navigation key="navigation" v-if="isCurrentPanel('navigation')"/>
+				<navigation
+					v-if="isCurrentPanel('navigation') && !search.state"
+					key="navigation"
+				/>
 				<themeSelection
-					key="theme-selection"
-					v-if="isCurrentPanel('theme')"
+					v-if="isCurrentPanel('theme') && !search.state"
+					key="themes"
 					@changeTheme="changeTheme"
 				/>
-				<langSelection key="lang-selection" v-if="isCurrentPanel('lang')"/>
-				<div key="search" class="search" v-if="isCurrentPanel('search')">
+				<langSelection
+					v-if="isCurrentPanel('lang') && !search.state"
+					key="languages"
+				/>
+			</transition>
+			<transition name="panel-search">
+				<div v-if="search.state" key="search" class="search">
 					<div class="result-item" v-for="item in 10" :key="item">
 						<h3>Header</h3>
 						<p>Ceteros ocurreret conclusionemque ex nam. Iusto vocent torquatos in vis, ei vix nulla prompta recusabo. Sed tincidunt persequeris eu, no quo semper liberavisse. Est id laudem aperiri repudiare. Iusto nobis iudico nec cu.</p>
@@ -28,8 +54,6 @@
 				</div>
 			</transition>
 		</div>
-		<!-- <transition-group id="panel-slider" name="panel-slider" mode="out-in" tag="div">
-		</transition-group> -->
 	</div>
 </div>
 </template>
@@ -38,11 +62,18 @@
 import Navigation from './Navigation'
 import LangSelection from './LangSelection'
 import ThemeSelection from './ThemeSelection'
+import MaterialIcon from './MaterialIcon'
 
 export default {
 	name: 'DropDownNavigation',
 	props: {
 		showDropdownNav: Boolean,
+	},
+	components: {
+		Navigation,
+		LangSelection,
+		ThemeSelection,
+		MaterialIcon,
 	},
 	data() {
 		return {
@@ -55,20 +86,19 @@ export default {
 				},{
 					id: 'lang',
 					icon: 'translate',
-				},{
-					id: 'search',
-					icon: 'search',
 			}],
-			searchInput: '',
+			search: {
+				input: '',
+				state: false,
+			},
 			currentPanel: 'navigation',
+			isContentScrolled: false,
 		}
 	},
-	components: {
-		Navigation,
-		LangSelection,
-		ThemeSelection,
-	},
 	methods: {
+		changePanel(option) {
+			this.currentPanel = option.id
+		},
 		isCurrentPanel(panel) {
 			return panel === this.currentPanel
 		},
@@ -78,7 +108,15 @@ export default {
 		closeOnWideScreen(event) {
 			if (event.target.innerWidth > 768 && this.showDropdownNav) {
 				this.$emit('toggleNav')
+				if (this.search.state) this.toggleSearch()
 			}
+		},
+		toggleSearch() {
+			this.search.state = !this.search.state
+		},
+		headerShadowOnScroll(event) {
+			if (event.target.scrollTop > 0) this.isContentScrolled = true
+			else this.isContentScrolled = false
 		},
 	},
 	mounted() {
@@ -98,7 +136,24 @@ export default {
 	z-index 1
 	background-color var(--app-bg)
 	transform translateY(0)
-	#options
+	.content
+		display flex
+		height 100%
+		width 100%
+		padding-top 4.6rem
+		flex-flow row wrap
+		align-content flex-start
+		align-items flex-start
+		overflow auto
+	&[contentScrolled]
+			box-shadow 0 6px 40px rgba(#000, .1)
+			.search-input > *
+				padding 1rem
+		.options
+			display flex
+			flex-flow row nowrap
+			flex 1 1 100%
+	.header
 		position sticky
 		position -webkit-sticky
 		top 0
@@ -107,6 +162,7 @@ export default {
 		flex-flow row nowrap
 		outline none
 		background-color var(--app-bg)
+		box-shadow 0 0 0 transparent
 		z-index 10
 		button
 			position relative
@@ -121,6 +177,8 @@ export default {
 			border none
 			opacity .3
 			cursor pointer
+			&:last-child
+				margin-right none
 			&:hover:not(.current)
 				opacity 1
 			&.current
@@ -141,8 +199,22 @@ export default {
 				transform translateX(100%)
 			&.lang
 				transform translateX(200%)
-			&.search
-				transform translateX(300%)
+		.search-input
+			position relative
+			display flex
+			flex 1 1 100%
+			flex-flow row nowrap
+			> *
+				padding 2rem
+			input
+				padding-right 0
+				flex 1 1 100%
+				outline none
+				border none
+				background none
+				color var(--app-fg)
+			.close
+				flex 0 0 auto
 	.search
 		.result-item
 			position relative
@@ -162,18 +234,17 @@ export default {
 			h3
 				margin-top 0
 	.panel-slider
-		&-enter, &-leave-to
-			transform translateX(-100%)
-	#panel-slider
 		position relative
 		flex 1 1 100%
+		&-enter, &-leave-to
+			transform translateX(-100%)
 		> *
 			position absolute
 			padding 1.5rem
 			width 100%
 			top 0
 			left 0
-		#theme-selection, #language-selection
+		#themes, #languages
 			display flex
 			flex-flow row wrap
 			justify-content flex-start
@@ -206,7 +277,7 @@ export default {
 					width @height
 					margin-right 1rem
 					border-radius @height
-		#language-selection button
+		#languages button
 			display flex
 			flex-flow row wrap
 			justify-content flex-start
@@ -220,22 +291,12 @@ export default {
 			.english-name
 				font-size calc(var(--app-font-size) * .75)
 				opacity .35
-	// 	#navigation
-	// 	#theme-selection
-	// 	#search
-	> .content
-		display flex
-		height 100%
-		width 100%
-		padding-top 4.6rem
-		flex-flow row wrap
-		align-content flex-start
-		align-items flex-start
-		overflow auto
-		> .nav-items
-			padding 1rem 1rem 2rem 1rem
-			.navigation #page-list
-				padding-left 1rem
+	.panel-search
+		&-enter, &-leave-to
+			opacity 0
+			transform translateY(10%)
+	&.expanded > .content
+		padding-top 0
 	&-enter, &-leave-to
 		transform translateY(-100%)
 </style>
