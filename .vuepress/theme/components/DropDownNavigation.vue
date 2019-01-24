@@ -314,6 +314,17 @@ export default {
 			.english-label
 				font-size calc(var(--app-font-size) * .75)
 				opacity .35
+		#themes .labels
+			display flex
+			flex-flow row wrap
+			justify-content flex-start
+			align-content center
+			align-items center
+			> *
+				flex 1 1 100%
+				text-align left
+			.description
+				opacity .35
 		#navigation
 			.page
 				margin-bottom 1rem

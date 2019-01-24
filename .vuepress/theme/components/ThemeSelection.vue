@@ -1,5 +1,5 @@
 <template>
-	<div id="theme-selection">
+	<div id="themes">
 		<button
 		v-for="theme in themes"
 		:key="theme.id"
@@ -11,7 +11,10 @@
 				}"
 				class="color-preview"
 			/>
-			<span class="name">{{ theme.name }}</span>
+			<div class="labels">
+				<span class="label">{{ theme.label }}</span>
+				<span class="description">{{ theme.description }}</span>
+			</div>
 		</button>
 	</div>
 </template>
@@ -22,15 +25,17 @@ export default {
 	data() {
 		return {
 			themes: [{
-					name: 'White',
+					label: 'White',
 					id: 'white-theme',
 					color: '#fff',
 					outline: '#000',
+					description: 'This is a theme for the daylight.',
 				},{
-					name: 'Black',
+					label: 'Black',
 					id: 'black-theme',
 					color: '#000',
 					outline: '#fff',
+					description: 'This is a theme for the night time.',
 			}],
 		}
 	},
