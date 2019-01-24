@@ -149,10 +149,6 @@ export default {
 		align-content flex-start
 		align-items flex-start
 		overflow auto
-	&[contentScrolled]
-			box-shadow 0 6px 40px rgba(#000, .1)
-			.search-input > *
-				padding 1rem
 		.options
 			display flex
 			flex-flow row nowrap
@@ -168,6 +164,10 @@ export default {
 		background-color var(--app-bg)
 		box-shadow 0 0 0 transparent
 		z-index 10
+		&[contentScrolled]
+			box-shadow 0 6px 40px rgba(#000, .1)
+			.search-input > *
+				padding 1rem
 		button
 			position relative
 			display flex
