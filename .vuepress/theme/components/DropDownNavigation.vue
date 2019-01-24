@@ -43,6 +43,8 @@
 				<langSelection
 					v-if="isCurrentPanel('lang') && !search.state"
 					key="languages"
+					@changeLanguage="(lang) => {$emit('changeLanguage', lang)}"
+					:currentLang="currentLang"
 				/>
 			</transition>
 			<transition name="panel-search">
@@ -68,6 +70,7 @@ export default {
 	name: 'DropDownNavigation',
 	props: {
 		showDropdownNav: Boolean,
+		currentLang: String,
 	},
 	components: {
 		Navigation,
@@ -278,17 +281,37 @@ export default {
 					margin-right 1rem
 					border-radius @height
 		#languages button
+			position relative
 			display flex
 			flex-flow row wrap
 			justify-content flex-start
 			align-content center
 			align-items center
 			text-align left
+			&.current
+				padding-left 3.5rem
+				.in-lang-label
+					color var(--theme-primary)
+			&:not(.current)
+				.icon
+					opacity 0
+					transform translateX(-100%)
 			> *
 				flex 1 1 100%
-			.in-lang-name
+			.icon
+				position absolute
+				left 1rem
+				flex 0 0 auto
+				line-height 1
+				font-weight 900
+				color var(--theme-primary)
+				border-radius 1rem
+				pointer-events none
+				transform translateX(0)
+				transition var(--default-transition)
+			.in-lang-label
 				font-size calc(var(--app-font-size) * 1.25)
-			.english-name
+			.english-label
 				font-size calc(var(--app-font-size) * .75)
 				opacity .35
 		#navigation

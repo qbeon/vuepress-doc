@@ -14,6 +14,8 @@
 			v-show="showDropdownNav"
 			@changeTheme="changeTheme"
 			:showDropdownNav="showDropdownNav"
+			@changeLanguage="changeLanguage"
+			:currentLang="language.isoCode"
 		/>
 	</transition>
 	<appHeader @toggleNav="toggleDropdownNav()" :theme="theme"/>
@@ -30,22 +32,28 @@ import AppHeader from './components/Header'
 import Navigation from './components/Navigation'
 import DropDownNavigation from './components/DropDownNavigation'
 import ModalViewport from './components/ModalViewport'
+import Config from '../config'
 
 export default {
 	name: 'Layout',
+	components: {
+		DropDownNavigation,
+		Navigation,
+		AppHeader,
+		ModalViewport,
+	},
 	data() {
 		return {
 			debugBoundaries: false,
 			showDropdownNav: false,
 			theme: 'theme_white',
 			showModalViewport: false,
+			config: Config,
+			language: {
+				isoCode: '',
+				path: '',
+			},
 		}
-	},
-	components: {
-		DropDownNavigation,
-		Navigation,
-		AppHeader,
-		ModalViewport,
 	},
 	computed: {
 		androidTopBar() {
@@ -87,6 +95,18 @@ export default {
 				el.remove('boundaries')
 			}
 			this.debugBoundaries = !this.debugBoundaries
+		},
+		changeLanguage(lang) {
+			this.language.isoCode = lang.lang
+			this.language.path = lang.path
+		},
+	},
+	watch: {
+		'language.path'(val) {
+			let fullPath = this.$route.fullPath
+			// this.$router.push(
+			// 	val + fullPath.slice(4, fullPath.length)
+			// )
 		},
 	},
 }
