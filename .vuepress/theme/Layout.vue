@@ -10,15 +10,24 @@
 	<transition name="drop-down-nav">
 		<dropDownNavigation
 			@toggleNav="toggleDropdownNav()"
-			:class="{'collapsed': !showDropdownNav}"
+			:class="{
+				'collapsed': !showDropdownNav,
+				'expanded': !headerState,
+			}"
 			v-show="showDropdownNav"
 			@changeTheme="changeTheme"
 			:showDropdownNav="showDropdownNav"
 			@changeLanguage="changeLanguage"
 			:currentLang="language.isoCode"
+			@toggleHeader="toggleHeader"
 		/>
 	</transition>
-	<appHeader @toggleNav="toggleDropdownNav()" :theme="theme"/>
+	<appHeader
+		@toggleNav="toggleDropdownNav()"
+		:class="{'hidden': !headerState}"
+		:theme="theme"
+		:dropDownNavState="showDropdownNav"
+	/>
 	<div id="site-container">
 		<navigation/>
 		<Content class="content"/>
@@ -53,6 +62,7 @@ export default {
 				isoCode: '',
 				path: '',
 			},
+			headerState: true,
 		}
 	},
 	computed: {
@@ -99,6 +109,10 @@ export default {
 		changeLanguage(lang) {
 			this.language.isoCode = lang.lang
 			this.language.path = lang.path
+		},
+		toggleHeader(state) {
+			if (state === undefined) this.headerState = !this.headerState
+			else this.headerState = state
 		},
 	},
 	watch: {

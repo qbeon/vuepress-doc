@@ -115,6 +115,7 @@ export default {
 			}
 		},
 		toggleSearch() {
+			this.$emit('toggleHeader')
 			this.search.state = !this.search.state
 		},
 		headerShadowOnScroll(event) {

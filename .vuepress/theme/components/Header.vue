@@ -1,19 +1,19 @@
 <template>
-<header>
+<header :contentScrolled="isContentScrolled && !dropDownNavState">
 	<img id="logo" :src="theme == 'black-theme' ? logoLight : logoDark">
 	<div id="navigator" @click="$emit('toggleNav')">
-		<span class="title">1. {{ $page.title }}</span>
-		<span class="section">1.1. Relations > Unidirectional Relations</span>
+		<span class="title">{{ $page.title }}</span>
+		<span class="section">{{ 'text' }}</span>
 	</div>
 	<div id="options">
 		<button id="change-theme">
-			<i class="material-icons">brush</i>
+			<materialIcon icon="brush"/>
 		</button>
 		<button id="change-language">
-			<i class="material-icons">translate</i>
+			<materialIcon icon="translate"/>
 		</button>
 		<button id="search">
-			<i class="material-icons">search</i>
+			<materialIcon icon="search"/>
 		</button>
 	</div>
 </header>
@@ -22,17 +22,35 @@
 <script>
 import LogoDark from '../assets/images/logoDark.svg'
 import LogoLight from '../assets/images/logoLight.svg'
+import MaterialIcon from '../components/MaterialIcon'
 
 export default {
 	name: 'Header',
+	components: {
+		MaterialIcon,
+	},
 	props: {
 		'theme': String,
+		'dropDownNavState': Boolean,
 	},
 	data() {
 		return {
 			logoDark: LogoDark,
 			logoLight: LogoLight,
+			isContentScrolled: false,
 		}
+	},
+	methods: {
+		headerShadowOnScroll(event) {
+			if (event.target.scrollingElement.scrollTop > 0) this.isContentScrolled = true
+			else this.isContentScrolled = false
+		},
+	},
+	mounted() {
+		window.addEventListener('scroll', this.headerShadowOnScroll)
+	},
+	destroyed() {
+		window.removeEventListener('scroll', this.headerShadowOnScroll)
 	},
 }
 </script>
@@ -47,9 +65,10 @@ header
 	justify-content space-between
 	background-color var(--app-bg)
 	z-index 2
+	&.hidden
+		transform translateY(-100%)
 	#logo
 		height 2.5rem
-		width 2.5rem
 		flex 0 0 auto
 	#navigator
 		display flex
@@ -97,6 +116,13 @@ header
 		position -webkit-sticky
 		top 0
 		padding 1rem
+		&[contentScrolled]
+			padding .5rem 1rem
+			box-shadow 0 6px 40px rgba(#000, .1)
+			#logo
+				height 2rem
+			#navigator
+				margin-left 1rem
 		#options
 			display none
 
