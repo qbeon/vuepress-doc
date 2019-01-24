@@ -291,6 +291,9 @@ export default {
 			.english-name
 				font-size calc(var(--app-font-size) * .75)
 				opacity .35
+		#navigation
+			.page
+				margin-bottom 1rem
 	.panel-search
 		&-enter, &-leave-to
 			opacity 0

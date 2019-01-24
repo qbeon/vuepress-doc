@@ -80,16 +80,6 @@ export default {
 			display flex
 			flex-flow row wrap
 			flex 1 1 100%
-			&:before
-				content ''
-				position absolute
-				top .75rem
-				left -2rem
-				height 2px
-				width 1rem
-				flex 0 0 auto
-				opacity 0
-				transform translateX(-1rem)
 			b
 				margin-right .5rem
 				font-weight normal
@@ -98,8 +88,6 @@ export default {
 		.page
 			flex 1 1 100%
 			margin-top 1rem
-			&-list-items
-				margin-top .5rem
 			&:first-child
 				margin-top 0
 			transition var(--default-transition)
@@ -124,7 +112,7 @@ export default {
 					b
 						opacity 1
 			.title
-				font-size calc(var(--app-font-size) * 1.25)
+				font-size calc(var(--app-font-size) * 1.1)
 				line-height var(--app-line-height)
 		.second-level, .third-level
 			margin-top .5rem
