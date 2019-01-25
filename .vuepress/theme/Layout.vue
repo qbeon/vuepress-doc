@@ -53,7 +53,7 @@ export default {
 	},
 	data() {
 		return {
-			debugBoundaries: false,
+			debug: false, // DEBUG --------
 			showDropdownNav: false,
 			theme: 'theme_white',
 			showModalViewport: false,
@@ -76,7 +76,7 @@ export default {
 					return 'default'
 			}
 		},
-	}, 
+	},
 	methods: {
 		changeTheme(theme) {
 			if (theme != this.theme && this.theme != '') {
@@ -93,18 +93,13 @@ export default {
 			}
 			this.showDropdownNav = !this.showDropdownNav
 		},
-		toggleDebugBoundries() {
-			if (!this.debugBoundaries) {
-				let el = document.documentElement.classList
-				el.add('debug')
-				el.add('boundaries')
+		toggleDebug() { // DEBUG --------
+			if (this.debug) {
+				document.documentElement.classList.remove('debug', 'boundaries')
+			} else {
+				document.documentElement.classList.add('debug', 'boundaries')
 			}
-			else {
-				let el = document.documentElement.classList
-				el.remove('debug')
-				el.remove('boundaries')
-			}
-			this.debugBoundaries = !this.debugBoundaries
+			this.debug = !this.debug
 		},
 		changeLanguage(lang) {
 			this.language.isoCode = lang.lang
