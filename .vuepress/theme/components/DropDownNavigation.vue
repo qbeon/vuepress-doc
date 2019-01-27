@@ -1,6 +1,12 @@
 <template>
-<div class="drop-down-nav" ref="dropDownNav">
-	<div class="content" @scroll="headerShadowOnScroll">
+<div
+ref="dropDownNav"
+:class="[
+	'drop-down-nav',
+	{'collapsed': !$store.state.appDropDownNav.show},
+	{'expanded': $store.state.appHeader.hide},
+]">
+	<div class="content" @scroll="onContentScrolled">
 		<div class="header" :contentScrolled="isContentScrolled">
 			<div v-show="!search.state" class="options">
 				<button
@@ -9,7 +15,7 @@
 				@click="changePanel(option)"
 				:class="[
 					option.id,
-					{'current': isCurrentPanel(option.id)},
+					{ 'current': isCurrentPanel(option.id) },
 				]">
 					<materialIcon :icon="option.icon"/>
 				</button>
@@ -32,19 +38,17 @@
 		<div class="panel-slider">
 			<transition name="panel-slider">
 				<navigation
-					v-if="isCurrentPanel('navigation') && !search.state"
-					key="navigation"
+					v-show="isCurrentPanel('navigation') && !search.state"
 				/>
+			</transition>
+			<transition name="panel-slider">
 				<themeSelection
-					v-if="isCurrentPanel('theme') && !search.state"
-					key="themes"
-					@changeTheme="changeTheme"
+					v-show="isCurrentPanel('theme') && !search.state"
 				/>
+			</transition>
+			<transition name="panel-slider">
 				<langSelection
-					v-if="isCurrentPanel('lang') && !search.state"
-					key="languages"
-					@changeLanguage="(lang) => {$emit('changeLanguage', lang)}"
-					:currentLang="currentLang"
+					v-show="isCurrentPanel('lang') && !search.state"
 				/>
 			</transition>
 			<transition name="panel-search">
@@ -68,10 +72,6 @@ import MaterialIcon from './MaterialIcon'
 
 export default {
 	name: 'DropDownNavigation',
-	props: {
-		showDropdownNav: Boolean,
-		currentLang: String,
-	},
 	components: {
 		Navigation,
 		LangSelection,
@@ -105,20 +105,20 @@ export default {
 		isCurrentPanel(panel) {
 			return panel === this.currentPanel
 		},
-		changeTheme(theme) {
-			this.$emit('changeTheme', theme)
-		},
 		closeOnWideScreen(event) {
-			if (event.target.innerWidth > 768 && this.showDropdownNav) {
-				this.$emit('toggleNav')
+			if (
+				event.target.innerWidth > 768 &&
+				this.$store.state.appDropDownNav.show
+			) {
+				this.$store.commit('toggleDropDownNav')
 				if (this.search.state) this.toggleSearch()
 			}
 		},
 		toggleSearch() {
-			this.$emit('toggleHeader')
+			this.$store.commit('toggleHeader')
 			this.search.state = !this.search.state
 		},
-		headerShadowOnScroll(event) {
+		onContentScrolled(event) {
 			if (event.target.scrollTop > 0) this.isContentScrolled = true
 			else this.isContentScrolled = false
 		},

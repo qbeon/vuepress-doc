@@ -1,10 +1,10 @@
 <template>
 	<div id="languages">
 		<button
-		v-for="(lang,idx) in sortedLangList"
+		v-for="(lang, idx) in sortedLangList"
 		:key="lang.label"
-		@click="$emit('changeLanguage', lang)"
-		:class="{'current': currentLang === lang.lang}">
+		@click="$store.commit('changeLanguage', lang)"
+		:class="{'current': $store.state.appLanguage.lang === lang.lang}">
 			<!-- $route.fullPath.slice(0, 4) == lang.path -->
 			<i class="material-icons icon">check</i>
 			<span class="in-lang-label">{{ lang.label }}</span>
@@ -14,22 +14,12 @@
 </template>
 
 <script>
-import LanguageList from '../../config'
-
 export default {
 	name: 'LanguageSelection',
-	props: {
-		'currentLang': String,
-	},
-	data() {
-		return {
-			languageList: LanguageList.locales,
-		}
-	},
 	computed: {
 		sortedLangList() {
 			// Sort alphabetically
-			return Object.values(this.languageList).sort((a, b) => {
+			return Object.values(this.$store.state.languages).sort((a, b) => {
 				let titleA = a.label.toLowerCase()
 				let titleB = b.label.toLowerCase()
 

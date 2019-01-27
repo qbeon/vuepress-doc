@@ -2,11 +2,11 @@
 <div id="navigation">
 	<ul id="page-list">
 		<li
+		v-for="(page, pageIdx) in sortedPages"
 		:class="[
 			'page',
 			{'selected': $route.path == page.path},
-		]"
-		v-for="(page, pageIdx) in sortedPages">
+		]">
 			<router-link :to="page.path" class="title">
 				{{ page.title }}
 			</router-link>

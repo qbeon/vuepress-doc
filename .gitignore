@@ -3,6 +3,7 @@
 .DS_Store
 /dist
 .vscode
+/node_modules
 
 # Log files
 *.log

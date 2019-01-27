@@ -1,4 +1,10 @@
 module.exports = {
+	head: [
+		['link', {
+			rel: 'stylesheet',
+			href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
+		}],
+	],
 	locales: {
 		'/en/': {
 			lang: 'en-US',

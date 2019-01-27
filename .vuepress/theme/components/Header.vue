@@ -1,7 +1,7 @@
 <template>
-<header :contentScrolled="isContentScrolled && !dropDownNavState">
-	<img id="logo" :src="theme == 'black-theme' ? logoLight : logoDark">
-	<div id="navigator" @click="$emit('toggleNav')">
+<header :contentScrolled="onContentScrolled">
+	<img id="logo" :src="$store.state.appTheme.dark ? logoLight : logoDark">
+	<div id="navigator" @click="$store.commit('toggleDropDownNav')">
 		<span class="title">{{ $page.title }}</span>
 		<span class="section">{{ 'text' }}</span>
 	</div>
@@ -29,10 +29,6 @@ export default {
 	components: {
 		MaterialIcon,
 	},
-	props: {
-		'theme': String,
-		'dropDownNavState': Boolean,
-	},
 	data() {
 		return {
 			logoDark: LogoDark,
@@ -40,9 +36,16 @@ export default {
 			isContentScrolled: false,
 		}
 	},
+	computed: {
+		onContentScrolled() {
+			return this.contentScroll && !this.$store.state.appDropDownNav.show
+		},
+	},
 	methods: {
 		headerShadowOnScroll(event) {
-			if (event.target.scrollingElement.scrollTop > 0) this.isContentScrolled = true
+			if (event.target.scrollingElement.scrollTop > 0) {
+				this.isContentScrolled = true
+			}
 			else this.isContentScrolled = false
 		},
 	},
