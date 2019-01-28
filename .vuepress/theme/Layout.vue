@@ -18,7 +18,7 @@
 		<navigation/>
 		<Content class="content"/>
 	</div>
-	<modalViewport v-show="$store.state.appModals.showViewer"/>
+	<modalViewport/>
 </div>
 </template>
 

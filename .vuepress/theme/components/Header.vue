@@ -6,14 +6,12 @@
 		<span class="section">{{ 'text' }}</span>
 	</div>
 	<div id="options">
-		<button id="change-theme">
-			<materialIcon icon="brush"/>
-		</button>
-		<button id="change-language">
-			<materialIcon icon="translate"/>
-		</button>
-		<button id="search">
-			<materialIcon icon="search"/>
+		<button
+		v-for="option in headerOptions"
+		:key="option.id"
+		:id="option.id"
+		@click="$store.commit('openModal', option.id)">
+			<materialIcon :icon="option.icon"/>
 		</button>
 	</div>
 </header>
@@ -34,6 +32,16 @@ export default {
 			logoDark: LogoDark,
 			logoLight: LogoLight,
 			isContentScrolled: false,
+			headerOptions: [{
+				id: 'themes',
+				icon: 'brush',
+			},{
+				id: 'languages',
+				icon: 'translate',
+			},{
+				id: 'search',
+				icon: 'search',
+			}],
 		}
 	},
 	computed: {

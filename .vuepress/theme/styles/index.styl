@@ -68,6 +68,9 @@ html, body
 	margin 0
 	font-family var(--app-default-font)
 	background-color: var(--app-bg)
+	transition var(--default-transition)
+	&.lock-scroll
+		overflow hidden
 	&.default-black-theme
 		--app-bg #000
 		--app-fg #FFF
@@ -76,10 +79,8 @@ html, body
 		--app-divider-opacity .1
 		--code-snippet-bg #222
 		--code-snippet-fg #DDD
-
-@media screen and (max-width 768px)
-	html.lock-scroll
-		overflow hidden
+		--modal-background-color rgba(#000, .5)
+		--modal-shadow 0 0 0 1px rgba(#fff, .1)
 
 body
 	justify-content center
@@ -263,3 +264,71 @@ a, q, .qoute, b, .bold, i, .italic
 @media screen and (max-width 768px)
 	#app #site-container #navigation
 		display none
+
+.list
+	display flex
+	flex-flow row wrap
+	justify-content flex-start
+	align-content flex-start
+	align-items flex-start
+	button
+		position relative
+		display flex
+		padding 1rem
+		flex 1 1 100%
+		justify-content flex-start
+		align-content center
+		align-items center
+		background none
+		outline none
+		border none
+		cursor pointer
+		color var(--app-fg)
+		&:not(:last-child):after
+			content ''
+			position absolute
+			bottom 0
+			left 0
+			width 100%
+			height 1px
+			background-color var(--app-divider-color)
+			opacity var(--app-divider-opacity)
+		.color-preview
+			height 1rem
+			width @height
+			margin-right 1rem
+			border-radius @height
+	&#languages button
+		position relative
+		display flex
+		flex-flow row wrap
+		justify-content flex-start
+		align-content center
+		align-items center
+		text-align left
+		&.current
+			padding-left 3.5rem
+			.in-lang-label
+				color var(--theme-primary)
+		&:not(.current)
+			.icon
+				opacity 0
+				transform translateX(-100%)
+		> *
+			flex 1 1 100%
+		.icon
+			position absolute
+			left 1rem
+			flex 0 0 auto
+			line-height 1
+			font-weight 900
+			color var(--theme-primary)
+			border-radius 1rem
+			pointer-events none
+			transform translateX(0)
+			transition var(--default-transition)
+		.in-lang-label
+			font-size calc(var(--app-font-size) * 1.25)
+		.english-label
+			font-size calc(var(--app-font-size) * .75)
+			opacity .35

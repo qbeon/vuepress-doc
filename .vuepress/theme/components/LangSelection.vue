@@ -1,5 +1,5 @@
 <template>
-	<div id="languages">
+	<div id="languages" class="list">
 		<button
 		v-for="(lang, idx) in sortedLangList"
 		:key="lang.label"

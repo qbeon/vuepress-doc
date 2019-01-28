@@ -8,11 +8,11 @@ ref="dropDownNav"
 ]">
 	<div class="content" @scroll="onContentScrolled">
 		<div class="header" :contentScrolled="isContentScrolled">
-			<div v-show="!search.state" class="options">
+			<div v-show="!$store.state.appSearch.show" class="options">
 				<button
 				v-for="option in dropDownNavOptions"
 				:key="option.id"
-				@click="changePanel(option)"
+				@click="$store.commit('changeDropDownNavPanel', option.id)"
 				:class="[
 					option.id,
 					{ 'current': isCurrentPanel(option.id) },
@@ -22,13 +22,19 @@ ref="dropDownNav"
 				<button @click="toggleSearch()">
 					<materialIcon icon="search"/>
 				</button>
-				<div :class="['slider', currentPanel]"/>
+				<div :class="[
+					'slider',
+					$store.state.appDropDownNav.currentPanel,
+				]"/>
 			</div>
-			<div v-show="search.state" class="search-input">
+			<div v-show="$store.state.appSearch.show" class="search-input">
 				<input
 					type="text"
-					v-model="search.input"
 					placeholder="Search me"
+					:value="$store.state.appSearch.input"
+					@input="(event) => {
+						$store.commit('searchInput', event.target.value)
+					}"
 				/>
 				<button class="close" @click="toggleSearch()">
 					<materialIcon icon="close"/>
@@ -37,22 +43,28 @@ ref="dropDownNav"
 		</div>
 		<div class="panel-slider">
 			<transition name="panel-slider">
-				<navigation
-					v-show="isCurrentPanel('navigation') && !search.state"
+				<navigation v-show="
+					isCurrentPanel('navigation') &&
+					!$store.state.appSearch.show"
 				/>
 			</transition>
 			<transition name="panel-slider">
-				<themeSelection
-					v-show="isCurrentPanel('theme') && !search.state"
+				<themeSelection v-show="
+					isCurrentPanel('themes') &&
+					!$store.state.appSearch.show"
 				/>
 			</transition>
 			<transition name="panel-slider">
-				<langSelection
-					v-show="isCurrentPanel('lang') && !search.state"
+				<langSelection v-show="
+					isCurrentPanel('languages') &&
+					!$store.state.appSearch.show"
 				/>
 			</transition>
 			<transition name="panel-search">
-				<div v-if="search.state" key="search" class="search">
+				<div
+				v-show="$store.state.appSearch.show"
+				key="search"
+				class="search">
 					<div class="result-item" v-for="item in 10" :key="item">
 						<h3>Header</h3>
 						<p>Ceteros ocurreret conclusionemque ex nam. Iusto vocent torquatos in vis, ei vix nulla prompta recusabo. Sed tincidunt persequeris eu, no quo semper liberavisse. Est id laudem aperiri repudiare. Iusto nobis iudico nec cu.</p>
@@ -81,47 +93,49 @@ export default {
 	data() {
 		return {
 			dropDownNavOptions: [{
-					id: 'navigation',
-					icon: 'subject',
-				},{
-					id: 'theme',
-					icon: 'brush',
-				},{
-					id: 'lang',
-					icon: 'translate',
+				id: 'navigation',
+				icon: 'subject',
+			},{
+				id: 'themes',
+				icon: 'brush',
+			},{
+				id: 'languages',
+				icon: 'translate',
 			}],
-			search: {
-				input: '',
-				state: false,
-			},
-			currentPanel: 'navigation',
 			isContentScrolled: false,
 		}
 	},
 	methods: {
-		changePanel(option) {
-			this.currentPanel = option.id
-		},
 		isCurrentPanel(panel) {
-			return panel === this.currentPanel
+			return panel === this.$store.state.appDropDownNav.currentPanel
 		},
 		closeOnWideScreen(event) {
 			if (
-				event.target.innerWidth > 768 &&
-				this.$store.state.appDropDownNav.show
+				this.$store.state.appDropDownNav.show &&
+				event.target.innerWidth > 768
 			) {
 				this.$store.commit('toggleDropDownNav')
-				if (this.search.state) this.toggleSearch()
+				if (this.$store.state.appSearch.show) this.toggleSearch()
 			}
 		},
 		toggleSearch() {
 			this.$store.commit('toggleHeader')
-			this.search.state = !this.search.state
+			this.$store.commit('toggleSearch')
 		},
 		onContentScrolled(event) {
-			if (event.target.scrollTop > 0) this.isContentScrolled = true
-			else this.isContentScrolled = false
+			if (event.target.scrollTop > 0) {
+				this.isContentScrolled = true
+			} else {
+				this.isContentScrolled = false
+			}
 		},
+	},
+	created() {
+		// Set panel as default to navigation
+		this.$store.commit(
+			'changeDropDownNavPanel',
+			'navigation',
+		)
 	},
 	mounted() {
 		window.addEventListener('resize', this.closeOnWideScreen)
@@ -199,9 +213,9 @@ export default {
 			background-color var(--theme-primary)
 			&.navigation
 				transform translateX(0)
-			&.theme
+			&.themes
 				transform translateX(100%)
-			&.lang
+			&.languages
 				transform translateX(200%)
 		.search-input
 			position relative
@@ -248,73 +262,6 @@ export default {
 			width 100%
 			top 0
 			left 0
-		#themes, #languages
-			display flex
-			flex-flow row wrap
-			justify-content flex-start
-			align-content flex-start
-			align-items flex-start
-			button
-				position relative
-				display flex
-				padding 1rem
-				flex 1 1 100%
-				justify-content flex-start
-				align-content center
-				align-items center
-				background none
-				outline none
-				border none
-				cursor pointer
-				color var(--app-fg)
-				&:not(:last-child):after
-					content ''
-					position absolute
-					bottom 0
-					left 0
-					width 100%
-					height 1px
-					background-color var(--app-divider-color)
-					opacity var(--app-divider-opacity)
-				.color-preview
-					height 1rem
-					width @height
-					margin-right 1rem
-					border-radius @height
-		#languages button
-			position relative
-			display flex
-			flex-flow row wrap
-			justify-content flex-start
-			align-content center
-			align-items center
-			text-align left
-			&.current
-				padding-left 3.5rem
-				.in-lang-label
-					color var(--theme-primary)
-			&:not(.current)
-				.icon
-					opacity 0
-					transform translateX(-100%)
-			> *
-				flex 1 1 100%
-			.icon
-				position absolute
-				left 1rem
-				flex 0 0 auto
-				line-height 1
-				font-weight 900
-				color var(--theme-primary)
-				border-radius 1rem
-				pointer-events none
-				transform translateX(0)
-				transition var(--default-transition)
-			.in-lang-label
-				font-size calc(var(--app-font-size) * 1.25)
-			.english-label
-				font-size calc(var(--app-font-size) * .75)
-				opacity .35
 		#themes .labels
 			display flex
 			flex-flow row wrap

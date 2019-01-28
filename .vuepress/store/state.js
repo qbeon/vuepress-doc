@@ -4,6 +4,7 @@ export default {
 	debug: false, // DEBUG --------
 
 
+
 	languages,
 	themes: {
 		'default-white-theme': {
@@ -25,6 +26,7 @@ export default {
 			osTopBarColor: '#000',
 		}
 	},
+
 	appLanguage: {
 		lang: '',
 		path: '',
@@ -40,9 +42,15 @@ export default {
 	},
 	appDropDownNav: {
 		show: false,
+		currentPanel: '',
 	},
 	appModals: {
 		showViewer: false,
-		currentModal: '',
+		current: '',
+	},
+	appScrollLock: false,
+	appSearch: {
+		show: false,
+		input: '',
 	},
 }

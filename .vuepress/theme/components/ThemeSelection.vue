@@ -1,5 +1,5 @@
 <template>
-	<div id="themes">
+	<div id="themes" class="list">
 		<button
 		v-for="(theme, themeId) in $store.state.themes"
 		:key="theme.id"
