@@ -193,8 +193,9 @@ export default {
 			background none
 			outline none
 			border none
-			opacity .3
+			opacity .25
 			cursor pointer
+			user-select none
 			&:last-child
 				margin-right none
 			&:hover:not(.current)
@@ -238,6 +239,8 @@ export default {
 			position relative
 			padding 1rem
 			margin-bottom 1rem
+			border-radius var(--card-border-radius)
+			overflow hidden
 			&:last-child
 				margin-bottom 0
 			&:before
@@ -247,8 +250,8 @@ export default {
 				left 0
 				height 100%
 				width 100%
-				background-color var(--app-fg)
-				opacity .1
+				background-color var(--card-bg)
+				z-index -1
 			h3
 				margin-top 0
 	.panel-slider

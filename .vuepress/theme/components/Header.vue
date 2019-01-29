@@ -46,7 +46,8 @@ export default {
 	},
 	computed: {
 		onContentScrolled() {
-			return this.contentScroll && !this.$store.state.appDropDownNav.show
+			return this.isContentScrolled &&
+				!this.$store.state.appDropDownNav.show
 		},
 	},
 	methods: {
@@ -70,7 +71,7 @@ export default {
 header
 	display flex
 	margin auto
-	padding 2rem 1rem
+	padding 1.5rem
 	flex 1 1 100%
 	align-items center
 	justify-content space-between

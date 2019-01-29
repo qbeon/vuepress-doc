@@ -77,10 +77,11 @@ html, body
 		--app-fg-h3 #999
 		--app-divider-color #fff
 		--app-divider-opacity .1
-		--code-snippet-bg #222
-		--code-snippet-fg #DDD
+		--code-snippet-bg #151515
+		--code-snippet-fg #AAA
 		--modal-background-color rgba(#000, .5)
 		--modal-shadow 0 0 0 1px rgba(#fff, .1)
+		--card-bg #151515
 
 body
 	justify-content center
@@ -89,7 +90,6 @@ body
 #app
 	background none
 	width 100%
-	max-width 960px
 	> div
 		width 100%
 
@@ -229,7 +229,7 @@ a, q, .qoute, b, .bold, i, .italic
 	display flex
 	flex-flow row nowrap
 	justify-content space-between
-	padding 0 1rem 2rem 1rem
+	padding 0 1.5rem 2rem 1.5rem
 	#navigation
 		position sticky
 		position -webkit-sticky
@@ -244,16 +244,27 @@ a, q, .qoute, b, .bold, i, .italic
 		flex 1 1 auto
 	.header-anchor
 		font-size inherit
+		font-weight 100
 		color var(--app-fg)
-		opacity .3
+		opacity .15
 		transition var(--default-transition)
-		&hover
-			color var(--fg-accent)
+		&:hover
+			opacity 1
+		&:active, &.active
+			opacity 1
+			color var(--theme-primary)
+	h1
+		font-size 1.75rem
+	h2
+		font-size 1.5rem
+	h3
+		font-size 1.25rem
 
 .language-
 	margin 1rem 0
 	padding .5rem 1rem
 	background var(--code-snippet-bg)
+	border-radius var(--code-snippet-border-radius)
 	color var(--code-snippet-fg)
 	overflow-x auto
 	& > .language-text
@@ -262,6 +273,8 @@ a, q, .qoute, b, .bold, i, .italic
 		font-family 'FiraCodeRegular'
 
 @media screen and (max-width 768px)
+	#site-container
+		padding 0 1rem 2rem 1rem
 	#app #site-container #navigation
 		display none
 
